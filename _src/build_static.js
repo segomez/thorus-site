@@ -52,6 +52,7 @@ const UI = {
 const nb = s => String(s).replace(/EE\. UU\./g, 'EE. UU.');
 const esc = s => nb(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const D = { en, es };
+const markLast = s => { const w = String(s).split(' '); const k = Math.min(3, w.length); return esc(w.slice(0, -k).join(' ')) + ' <mark>' + esc(w.slice(-k).join(' ')) + '</mark>'; };
 const prefix = lang => (lang === 'es' ? 'es/' : '');
 // route paths (relative to site root, folder style)
 const P = {
@@ -113,7 +114,7 @@ function page({ lang, here, alt, title, description, body, talkHref }) {
 <link rel="icon" href="${rel(here, 'assets/favicon.svg')}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="${rel(here, 'assets/style.css')}">
 </head>
 <body>
@@ -142,7 +143,7 @@ function homePage(lang) {
   const L = D[lang], h = L.home, here = P.home(lang), U = UI[lang];
   const body = `
 <section class="hero"><div class="wrap">
-  <div class="hero-copy"><div class="mono eyebrow">${esc(h.eyebrow)}</div><h1>${esc(h.title)}</h1></div>
+  <div class="hero-copy"><div class="mono eyebrow">${esc(h.eyebrow)}</div><h1>${markLast(h.title)}</h1></div>
   <div style="min-width:0">${videoBlock(lang + '-home', h.videoLabel, false)}</div>
 </div></section>
 <section class="doors"><div class="wrap">
@@ -241,11 +242,13 @@ const SITE_JS = `// Thorus site behaviour: video placeholders and demo-mode lead
   function draw(c) {
     var r = c.getBoundingClientRect(), d = window.devicePixelRatio || 1;
     c.width = Math.max(1, r.width * d); c.height = Math.max(1, r.height * d);
-    var x = c.getContext('2d'); x.scale(d, d); var w = r.width, h = r.height;
-    var g = x.createRadialGradient(w * .72, h * .35, 10, w * .72, h * .35, w * .7);
-    g.addColorStop(0, 'rgba(79,189,185,0.28)'); g.addColorStop(1, 'rgba(79,189,185,0)');
-    x.fillStyle = g; x.fillRect(0, 0, w, h); x.strokeStyle = 'rgba(234,242,244,0.07)'; x.lineWidth = 1;
-    for (var i = 0; i < 14; i++) { x.beginPath(); for (var s = 0; s <= w; s += 8) { var y = h * (0.15 + i * 0.06) + Math.sin(s / 90 + i * .7) * 10 + Math.cos(s / 37 + i) * 4; s ? x.lineTo(s, y) : x.moveTo(s, y); } x.stroke(); }
+    var x = c.getContext('2d'); x.scale(d, d); var w = r.width, h = r.height, gx, gy;
+    x.fillStyle = 'rgba(236,238,230,0.06)';
+    for (gx = 0; gx < w; gx += 18) x.fillRect(gx, 0, 1, h);
+    for (gy = 0; gy < h; gy += 18) x.fillRect(0, gy, w, 1);
+    x.fillStyle = 'rgba(200,50,28,0.6)'; x.fillRect(w * .14, 0, 1.5, h);
+    x.fillStyle = 'rgba(242,221,61,0.85)'; x.fillRect(w * .2, h * .22, w * .5, h * .035);
+    x.fillStyle = 'rgba(236,238,230,0.5)'; x.fillRect(w * .2, h * .3, w * .62, h * .012); x.fillRect(w * .2, h * .33, w * .48, h * .012);
   }
   function all() { document.querySelectorAll('.video canvas').forEach(draw); }
   all(); window.addEventListener('resize', all);
@@ -257,7 +260,7 @@ const SITE_JS = `// Thorus site behaviour: video placeholders and demo-mode lead
 })();
 `;
 
-const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#12243A"/><path d="M16 20h32M32 20v28" stroke="#4FBDB9" stroke-width="7" stroke-linecap="round"/></svg>`;
+const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#15171A"/><path d="M16 20h32M32 20v28" stroke="#F2DD3D" stroke-width="7" stroke-linecap="round"/></svg>`;
 
 const pages = [];
 for (const lang of ['en', 'es']) {

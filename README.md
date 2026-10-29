@@ -36,7 +36,7 @@ All settings live at the top of `_src/build_static.js` in `CONFIG`:
 |---|---|
 | `bookingUrl` | Your Google Calendar appointment schedule link (Calendar → Create → Appointment schedule → Share). |
 | `forms` | One form endpoint per lead magnet. With Kit: create a form per resource, copy its ID into `https://app.kit.com/forms/<ID>/subscriptions`, and set the form's incentive email to deliver the PDF. While a value contains `REPLACE_`, the form stays in demo mode and does not submit. |
-| `videos` | YouTube video IDs (the part after `watch?v=`). Empty = animated placeholder. Upload videos as *Unlisted* if you only want them on the site. |
+| `videos` | YouTube video IDs (the part after `watch?v=` or `/shorts/`). Empty = placeholder. The video frames are vertical (9:16): upload the vertical videos to YouTube; a vertical upload under 3 minutes becomes a Short and embeds fine. Use *Unlisted* if you only want a video on the site. |
 
 ## Edit text and rebuild
 
