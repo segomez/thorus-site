@@ -1,0 +1,394 @@
+<title>Thorus Website Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: consultancy site — ink header band, video-first hero, three problem "doors" as full-width rows, problem pages as a readable single column with a two-option close. */
+:root {
+  --ink: #12243A;        /* header band, headings */
+  --paper: #F6F8F8;      /* page ground, slight teal-grey bias */
+  --surface: #FFFFFF;
+  --fg: #1C2733;
+  --muted: #5B6875;
+  --line: #D8E1E4;
+  --teal: #0E7C7B;       /* accent */
+  --teal-soft: #E3F1F0;
+  --amber: #B87412;      /* figures */
+  --on-ink: #EAF2F4;
+  --on-ink-muted: #9FB4C2;
+  --video: #0E1B2B;
+  --on-accent: #FFFFFF;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --max: 68rem;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ink: #0B1726; --paper: #101B28; --fg: #E4ECF0; --muted: #9AAAB7; --line: #2A3B4D;
+  --teal: #4FBDB9; --teal-soft: #173638; --amber: #E2A64A; --on-ink: #EAF2F4; --on-ink-muted: #8EA3B3; --video: #08121D;
+  --surface: #172535; --on-accent: #08121D; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --ink: #0B1726; --paper: #101B28; --fg: #E4ECF0; --muted: #9AAAB7; --line: #2A3B4D;
+  --teal: #4FBDB9; --teal-soft: #173638; --amber: #E2A64A; --on-ink: #EAF2F4; --on-ink-muted: #8EA3B3; --video: #08121D;
+  --surface: #172535; --on-accent: #08121D; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--fg); font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.6; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ink); }
+.wrap { max-width: var(--max); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.narrow { max-width: 44rem; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.12; letter-spacing: -0.01em; }
+a { color: var(--teal); }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+.mono { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+
+.proto { background: var(--teal-soft); color: var(--fg); font-size: .8125rem; }
+.proto .wrap { padding-block: .45rem; display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.proto nav { display: flex; gap: .35rem; flex-wrap: wrap; }
+.proto button { font: inherit; font-size: .75rem; border: 1px solid var(--line); background: var(--surface); color: var(--fg); padding: .2rem .55rem; border-radius: 99px; cursor: pointer; }
+.proto button[aria-current="true"] { background: var(--teal); color: var(--on-accent); border-color: var(--teal); }
+
+header.site { background: var(--ink); color: var(--on-ink); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+header.site .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .85rem; }
+.brand { display: flex; align-items: baseline; gap: .6rem; color: var(--on-ink); text-decoration: none; }
+.brand b { font-family: var(--font-display); font-size: 1.25rem; letter-spacing: .14em; font-weight: 700; }
+.brand span { color: var(--on-ink-muted); font-size: .8rem; }
+.hnav { display: flex; gap: .75rem; align-items: center; }
+.lang { color: var(--on-ink); background: none; border: 1px solid #ffffff40; border-radius: 99px; padding: .3rem .8rem; font: inherit; font-size: .85rem; cursor: pointer; }
+.btn { display: inline-flex; align-items: center; gap: .5rem; background: var(--teal); color: var(--on-accent); border: 0; border-radius: 6px; padding: .7rem 1.1rem; font: 600 .95rem var(--font-body); text-decoration: none; cursor: pointer; }
+.btn:hover { filter: brightness(1.08); }
+.hnav .btn { padding: .45rem .9rem; font-size: .85rem; }
+@media (max-width: 560px) { .brand span, .hnav .btn { display: none; } }
+
+/* hero */
+.hero { background: var(--ink); color: var(--on-ink); padding-bottom: 0; }
+.hero .wrap { padding-block: 2.5rem 0; display: grid; gap: 2rem; grid-template-columns: 1fr; }
+@media (min-width: 900px) { .hero .wrap { grid-template-columns: 5fr 6fr; align-items: end; } }
+.hero .eyebrow { color: var(--on-ink-muted); }
+.hero h1 { font-size: clamp(2rem, 4.4vw, 3.1rem); font-weight: 700; margin-top: .75rem; color: #fff; }
+.hero-copy { padding-bottom: 2.5rem; min-width: 0; }
+.video { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--video); border-radius: 10px 10px 0 0; overflow: hidden; display: grid; place-items: center; color: var(--on-ink); border: 1px solid #ffffff1a; border-bottom: 0; }
+.video.inline { border-radius: 10px; border: 1px solid var(--line); margin-block: 1.75rem; }
+.video canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.video .play { position: relative; display: grid; justify-items: center; gap: .6rem; text-align: center; padding: 1rem; }
+.video .disc { width: 4.2rem; height: 4.2rem; border-radius: 50%; background: var(--teal); display: grid; place-items: center; }
+.video .disc::after { content: ""; border-left: 1.1rem solid #fff; border-top: .7rem solid transparent; border-bottom: .7rem solid transparent; margin-left: .3rem; }
+.video .vl { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--on-ink-muted); }
+.video .face { position: absolute; left: 1rem; bottom: .9rem; font-size: .8rem; color: var(--on-ink-muted); }
+details.script { margin-top: .9rem; }
+details.script summary { cursor: pointer; font-weight: 600; color: var(--teal); font-size: .95rem; }
+details.script div { margin-top: .6rem; padding: 1rem 1.2rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font-size: .95rem; color: var(--fg); }
+details.script p { margin: 0 0 .55rem; }
+
+/* doors */
+.doors { padding-block: 2.75rem 1rem; }
+.doors .lead { font-family: var(--font-display); font-size: clamp(1.3rem, 2.4vw, 1.65rem); font-weight: 500; margin: 0 0 1.25rem; max-width: 40rem; text-wrap: balance; }
+.door-list { display: grid; gap: .75rem; }
+.door { display: grid; grid-template-columns: auto 1fr auto; gap: 1.1rem; align-items: center; text-align: left; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.2rem 1.3rem; cursor: pointer; color: var(--fg); font: inherit; transition: border-color .15s, transform .15s; }
+.door:hover { border-color: var(--teal); transform: translateX(3px); }
+.door .n { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; color: var(--teal); width: 2rem; }
+.door .txt { min-width: 0; }
+.door strong { display: block; font-family: var(--font-display); font-size: clamp(1.1rem, 2vw, 1.3rem); font-weight: 700; color: var(--ink); line-height: 1.25; }
+:root[data-theme="dark"] .door strong { color: var(--fg); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .door strong { color: var(--fg); } }
+.door span { color: var(--muted); font-size: .95rem; }
+.door .arrow { font-size: 1.4rem; color: var(--teal); }
+
+/* about */
+.about { padding-block: 2.5rem 3rem; display: grid; gap: 2rem; }
+@media (min-width: 860px) { .about { grid-template-columns: 6fr 5fr; align-items: start; } }
+.about p { margin: .6rem 0 0; color: var(--fg); }
+.about h2 { font-size: 1.4rem; }
+.proof { display: grid; gap: .6rem; margin: 0; padding: 0; list-style: none; }
+.proof li { display: grid; grid-template-columns: 8.5rem 1fr; gap: .9rem; align-items: baseline; border-top: 1px solid var(--line); padding-top: .6rem; }
+.proof b { font-family: var(--font-display); font-size: 1.35rem; color: var(--amber); font-variant-numeric: tabular-nums; }
+.proof span { color: var(--muted); font-size: .95rem; }
+
+/* problem page */
+.crumb { padding-block: 1.5rem 0; }
+.crumb button { background: none; border: 0; color: var(--teal); font: 500 .95rem var(--font-body); cursor: pointer; padding: 0; }
+.ptitle { padding-block: 1rem 0; }
+.ptitle h1 { font-size: clamp(1.75rem, 3.6vw, 2.5rem); color: var(--ink); font-weight: 700; }
+:root[data-theme="dark"] .ptitle h1, :root[data-theme="dark"] .sec h2 { color: var(--fg); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ptitle h1, :root:not([data-theme="light"]) .sec h2 { color: var(--fg); } }
+.sec { margin-top: 2.2rem; }
+.sec h2 { font-size: 1.35rem; color: var(--ink); margin-bottom: .6rem; }
+.sec p { margin: 0 0 .9rem; }
+.callout { background: var(--teal-soft); border-radius: 10px; padding: 1.3rem 1.4rem; }
+.callout .mono { color: var(--teal); }
+.callout p { margin: .4rem 0 0; font-size: 1.08rem; }
+ol.think { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; counter-reset: k; }
+ol.think li { counter-increment: k; display: grid; grid-template-columns: 2.2rem 1fr; gap: .8rem; }
+ol.think li::before { content: counter(k); font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--on-accent); background: var(--teal); width: 2.2rem; height: 2.2rem; border-radius: 50%; display: grid; place-items: center; }
+ol.think strong { display: block; color: var(--fg); }
+ol.think span { color: var(--muted); }
+
+.close { margin-top: 2.75rem; display: grid; gap: 1rem; }
+@media (min-width: 760px) { .close { grid-template-columns: 1fr 1fr; } }
+.close > div { border-radius: 12px; padding: 1.5rem; min-width: 0; }
+.talk { background: var(--ink); color: var(--on-ink); }
+.talk h3, .mag h3 { font-size: 1.25rem; margin: .4rem 0 .6rem; }
+.talk h3 { color: #fff; }
+.talk p { margin: 0 0 1rem; color: var(--on-ink); }
+.talk .mono { color: var(--on-ink-muted); }
+.talk small { display: block; margin-top: .9rem; color: var(--on-ink-muted); user-select: all; }
+.mag { background: var(--surface); border: 2px solid var(--teal); }
+.mag .mono { color: var(--teal); }
+.mag p { margin: 0 0 1rem; color: var(--muted); }
+.mag form { display: flex; gap: .5rem; flex-wrap: wrap; }
+.mag input { flex: 1 1 12rem; min-width: 0; font: inherit; padding: .65rem .8rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--fg); }
+.mag .note { font-size: .8rem; margin: .6rem 0 0; }
+.mag .ok { margin-top: .8rem; padding: .7rem .9rem; border-radius: 6px; background: var(--teal-soft); font-size: .9rem; color: var(--fg); }
+
+.others { margin-top: 2.75rem; padding-bottom: 3rem; }
+.others h2 { font-size: 1.1rem; margin-bottom: .8rem; }
+
+.blog-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+.post-card { display: grid; gap: .45rem; align-content: start; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.2rem 1.25rem; cursor: pointer; color: var(--fg); font: inherit; transition: border-color .15s; }
+.post-card:hover { border-color: var(--teal); }
+.post-card .mono { color: var(--teal); }
+.post-card strong { font-family: var(--font-display); font-size: 1.15rem; line-height: 1.25; color: var(--fg); text-wrap: balance; }
+.post-card span.d { color: var(--muted); font-size: .93rem; }
+.blogsec { padding-block: 1rem 3rem; }
+.blogsec h2, .others h2 { font-size: 1.35rem; margin-bottom: 1rem; }
+.post-list { display: grid; gap: .6rem; }
+.post-link { display: block; text-align: left; width: 100%; background: none; border: 0; border-top: 1px solid var(--line); padding: .8rem 0 .2rem; cursor: pointer; font: 600 1.02rem var(--font-body); color: var(--teal); }
+.article h1 { font-size: clamp(1.75rem, 3.6vw, 2.5rem); font-weight: 700; margin-top: .75rem; }
+.article .dek { font-size: 1.18rem; color: var(--muted); margin: 1rem 0 1.5rem; }
+.article .meta { color: var(--muted); font-size: .85rem; display: flex; gap: .5rem 1rem; flex-wrap: wrap; border-block: 1px solid var(--line); padding-block: .6rem; }
+.article h2 { font-size: 1.3rem; margin: 2rem 0 .6rem; }
+.article p { margin: 0 0 1rem; }
+.article ul { margin: 0 0 1rem; padding-left: 1.2rem; display: grid; gap: .4rem; }
+.article ul li::marker { color: var(--teal); }
+.post-cta { margin-top: 2.5rem; background: var(--teal-soft); border-radius: 12px; padding: 1.5rem; display: grid; gap: .8rem; }
+.post-cta .mono { color: var(--teal); }
+.post-cta h3 { font-size: 1.25rem; }
+.post-cta p { margin: 0; }
+.post-cta .row { display: flex; gap: .6rem; flex-wrap: wrap; }
+.btn.ghost { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
+.hnav .navlink { color: var(--on-ink); background: none; border: 0; font: 500 .9rem var(--font-body); cursor: pointer; padding: .3rem .2rem; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+footer .wrap { padding-block: 1.5rem; display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="proto" role="note">
+  <div class="wrap">
+    <span><b>Prototipo de estructura</b> · textos finales, videos y formularios simulados · <span id="urlpath" class="mono" style="text-transform:none"></span></span>
+    <nav id="pnav" aria-label="Páginas del prototipo"></nav>
+  </div>
+</div>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#" id="brand"><b>THORUS</b><span>Consulting</span></a>
+    <div class="hnav">
+      <button class="navlink" id="blogBtn" type="button"></button>
+      <button class="lang" id="langBtn" type="button"></button>
+      <a class="btn" href="#" id="hTalk"></a>
+    </div>
+  </div>
+</header>
+<main id="app"></main>
+<footer><div class="wrap"><span id="foot"></span><span id="contactLine"></span></div></footer>
+
+<script>
+const DATA = __DATA__;
+const app = document.getElementById('app');
+const BLOG = DATA.blog;
+const UI = {
+  en: { blog: 'Blog', blogTitle: 'Plain talk on technology decisions', blogIntro: 'Short, practical articles for owners and executives who need to make technology decisions without the jargon.', fromBlog: 'From the blog', allPosts: 'All articles', related: 'Related reading', min: 'min read', relatedTo: 'Related situation', ctaEyebrow: 'Does this sound like your company?', ctaGo: 'Read the full guide', back: 'All articles' },
+  es: { blog: 'Blog', blogTitle: 'Decisiones de tecnología, en lenguaje claro', blogIntro: 'Artículos cortos y prácticos para dueños y gerentes que necesitan tomar decisiones de tecnología sin jerga.', fromBlog: 'Del blog', allPosts: 'Todos los artículos', related: 'Lecturas relacionadas', min: 'min de lectura', relatedTo: 'Situación relacionada', ctaEyebrow: '¿Le suena a su empresa?', ctaGo: 'Ver la guía completa', back: 'Todos los artículos' },
+};
+const postsOf = lang => BLOG.filter(b => b.lang === lang);
+const readMin = b => Math.max(2, Math.round(b.body.map(x => typeof x === 'string' ? x : x.h || (x.list || []).join(' ')).join(' ').split(/\s+/).length / 220));
+function postCard(b, noTag) {
+  const L = DATA[b.lang]; const pr = L.problems.find(p => p.slug === b.problem);
+  return `<button class="post-card" type="button" data-go="${b.lang}-blog-${b.slug}">${noTag ? '' : `<span class="mono">${esc(pr.button)}</span>`}<strong>${esc(b.title)}</strong><span class="d">${esc(b.dek)}</span><span class="d">${readMin(b)} ${UI[b.lang].min}</span></button>`;
+}
+function blogIndex(L) {
+  const U = UI[L.lang];
+  return `<div class="wrap"><div class="ptitle" style="padding-top:2.5rem"><div class="mono" style="color:var(--teal)">${U.blog}</div><h1 style="margin-top:.5rem">${esc(U.blogTitle)}</h1><p style="color:var(--muted);max-width:40rem">${esc(U.blogIntro)}</p></div>
+  <section class="blogsec">${L.problems.map(p => { const ps = postsOf(L.lang).filter(b => b.problem === p.slug); return ps.length ? `<h2 style="margin-top:1.5rem">${esc(p.button)}</h2><div class="blog-grid">${ps.map(b => postCard(b, true)).join('')}</div>` : ''; }).join('')}</section></div>`;
+}
+function article(L, b) {
+  const U = UI[L.lang]; const pr = L.problems.find(p => p.slug === b.problem);
+  const body = b.body.map(x => typeof x === 'string' ? `<p>${esc(x)}</p>` : x.h ? `<h2>${esc(x.h)}</h2>` : `<ul>${x.list.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`).join('');
+  const more = postsOf(L.lang).filter(o => o.slug !== b.slug).slice(0, 3);
+  return `<div class="wrap narrow article">
+    <div class="crumb"><button type="button" data-go="${L.lang}-blog">← ${U.back}</button></div>
+    <h1>${esc(b.title)}</h1>
+    <p class="dek">${esc(b.dek)}</p>
+    <div class="meta"><span>Sebastián Gómez</span><span>${readMin(b)} ${U.min}</span><span>${U.relatedTo}: ${esc(pr.button)}</span></div>
+    <div style="margin-top:1.5rem">${body}</div>
+    <div class="post-cta"><div class="mono">${U.ctaEyebrow}</div><h3>${esc(pr.button)}</h3><p>${esc(pr.teaser)} ${L.lang === 'es' ? 'Recurso gratuito:' : 'Free resource:'} <b>${esc(pr.magnet.title)}</b>.</p>
+      <div class="row"><button class="btn" type="button" data-go="${L.lang}-${pr.slug}">${U.ctaGo}</button><button class="btn ghost" type="button" data-go="${L.lang}-${pr.slug}" data-talk>${esc(L.nav.talk)}</button></div></div>
+    <section class="others"><h2>${U.allPosts}</h2><div class="blog-grid">${more.map(postCard).join('')}</div></section>
+  </div>`;
+}
+let route = { lang: 'en', slug: null };
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function videoBlock(label, script, inline, L) {
+  return `<div class="video ${inline ? 'inline' : ''}" role="img" aria-label="${esc(label)}">
+    <canvas aria-hidden="true"></canvas>
+    <div class="play"><div class="disc"></div><div class="vl">${esc(label)}</div></div>
+    <div class="face">Sebastián Gómez</div>
+  </div>
+  <details class="script"><summary>${L.lang === 'es' ? 'Leer el guion del video' : 'Read the video script'}</summary><div>${script.map(s => `<p>${esc(s)}</p>`).join('')}</div></details>`;
+}
+
+function home(L) {
+  const h = L.home;
+  return `
+  <section class="hero"><div class="wrap">
+    <div class="hero-copy">
+      <div class="mono eyebrow">${esc(h.eyebrow)}</div>
+      <h1>${esc(h.title)}</h1>
+    </div>
+    <div style="min-width:0">${videoBlock(h.videoLabel, [], false, L).split('<details')[0]}</div>
+  </div></section>
+  <section class="doors"><div class="wrap">
+    <details class="script" style="margin:0 0 1.75rem"><summary>${L.lang === 'es' ? 'Leer el guion del video de bienvenida' : 'Read the welcome video script'}</summary><div>${h.script.map(s => `<p>${esc(s)}</p>`).join('')}</div></details>
+    <p class="lead">${esc(h.lead)}</p>
+    <div class="door-list">
+      ${L.problems.map((p, i) => `<button class="door" type="button" data-go="${L.lang}-${p.slug}">
+        <span class="n">${i + 1}</span><span class="txt"><strong>${esc(p.button)}</strong><span>${esc(p.teaser)}</span></span><span class="arrow" aria-hidden="true">→</span>
+      </button>`).join('')}
+    </div>
+  </div></section>
+  <section class="wrap blogsec" style="padding-bottom:0"><h2>${UI[L.lang].fromBlog}</h2><div class="blog-grid">${postsOf(L.lang).slice(0, 3).map(postCard).join('')}</div>
+    <div style="margin-top:1rem"><button class="post-link" style="border:0;padding:0" type="button" data-go="${L.lang}-blog">${UI[L.lang].allPosts} →</button></div></section>
+  <section class="wrap about">
+    <div><div class="mono" style="color:var(--teal)">${L.lang === 'es' ? 'Quién está detrás' : 'Who you’ll work with'}</div><h2>Sebastián Gómez</h2><p>${esc(h.about)}</p></div>
+    <ul class="proof">${h.proof.map(([n, l]) => `<li><b>${esc(n)}</b><span>${esc(l)}</span></li>`).join('')}</ul>
+  </section>`;
+}
+
+function problem(L, p) {
+  const S = L.sections;
+  const others = L.problems.filter(o => o.slug !== p.slug);
+  return `
+  <div class="wrap narrow">
+    <div class="crumb"><button type="button" data-go="${L.lang}">← ${esc(L.nav.home)}</button></div>
+    <div class="ptitle"><h1>${esc(p.title)}</h1></div>
+    ${videoBlock(p.videoLabel, p.script, true, L)}
+    <section class="sec"><h2>${esc(S.why)}</h2>${p.why.map(w => `<p>${esc(w)}</p>`).join('')}</section>
+    <section class="sec callout"><div class="mono">${esc(S.notConsidered)}</div><p>${esc(p.notConsidered)}</p></section>
+    <section class="sec"><h2>${esc(S.think)}</h2>
+      <ol class="think">${p.think.map(([a, b]) => `<li><div><strong>${esc(a)}</strong><span>${esc(b)}</span></div></li>`).join('')}</ol>
+    </section>
+  </div>
+  <div class="wrap narrow">
+    <div class="close" id="talk">
+      <div class="talk">
+        <div class="mono">${esc(L.talkLabel)}</div>
+        <h3>${L.lang === 'es' ? 'Conversación de 30 minutos' : '30-minute conversation'}</h3>
+        <p>${esc(p.cta)}</p>
+        <a class="btn" href="#" data-noop>${esc(L.nav.talk)}</a>
+        <small>${esc(DATA.contact.email)} · ${esc(DATA.contact.phone)}</small><small style="margin-top:.3rem">${L.lang === 'es' ? 'Agenda con Google Calendar' : 'Scheduling via Google Calendar'}</small>
+      </div>
+      <div class="mag">
+        <div class="mono">${esc(L.notReady)}</div>
+        <h3>${esc(p.magnet.title)}</h3>
+        <p>${esc(p.magnet.desc)}</p>
+        <form data-mag>
+          <label class="mono" for="email-${p.slug}" style="position:absolute;left:-9999px">${esc(L.magnetForm.email)}</label>
+          <input id="email-${p.slug}" type="email" required placeholder="${esc(L.magnetForm.email)}">
+          <button class="btn" type="submit">${esc(p.magnet.button)}</button>
+        </form>
+        <p class="note">${esc(L.magnetForm.note)}</p>
+        <div class="ok" hidden>${esc(L.magnetForm.prototype)}</div>
+      </div>
+    </div>
+    ${(() => { const ps = postsOf(L.lang).filter(b => b.problem === p.slug); return ps.length ? `<section class="others"><h2>${UI[L.lang].related}</h2><div class="post-list">${ps.map(b => `<button class="post-link" type="button" data-go="${L.lang}-blog-${b.slug}">${esc(b.title)} →</button>`).join('')}</div></section>` : ''; })()}
+    <section class="others"><h2>${esc(S.other)}</h2>
+      <div class="door-list">${others.map(o => `<button class="door" type="button" data-go="${L.lang}-${o.slug}">
+        <span class="n">${L.problems.indexOf(o) + 1}</span><span class="txt"><strong>${esc(o.button)}</strong><span>${esc(o.teaser)}</span></span><span class="arrow" aria-hidden="true">→</span></button>`).join('')}</div>
+    </section>
+  </div>`;
+}
+
+function parse(token) {
+  const m = /^(en|es)(?:-(.+))?$/.exec(token || '');
+  if (!m) return { lang: 'en', slug: null };
+  if (m[2] === 'blog') return { lang: m[1], slug: null, blog: true };
+  if (m[2] && m[2].startsWith('blog-')) { const s = m[2].slice(5); if (BLOG.some(b => b.lang === m[1] && b.slug === s)) return { lang: m[1], slug: null, blog: true, post: s }; }
+  const L = DATA[m[1]];
+  const slug = m[2] && L.problems.some(p => p.slug === m[2]) ? m[2] : null;
+  return { lang: m[1], slug };
+}
+function tokenOf(r) { return r.post ? `${r.lang}-blog-${r.post}` : r.blog ? `${r.lang}-blog` : r.slug ? `${r.lang}-${r.slug}` : r.lang; }
+
+function render() {
+  const L = DATA[route.lang];
+  document.documentElement.lang = route.lang;
+  const p = route.slug && L.problems.find(x => x.slug === route.slug);
+  const post = route.post && BLOG.find(b => b.lang === route.lang && b.slug === route.post);
+  app.innerHTML = post ? article(L, post) : route.blog ? blogIndex(L) : p ? problem(L, p) : home(L);
+  document.getElementById('blogBtn').textContent = UI[route.lang].blog;
+  document.getElementById('langBtn').textContent = L.nav.switchTo;
+  document.getElementById('hTalk').textContent = L.nav.talk;
+  document.getElementById('foot').textContent = L.footer;
+  document.getElementById('contactLine').textContent = `${DATA.contact.email} · ${DATA.contact.phone} · ${DATA.contact.linkedin}`;
+  const pages = ['en', ...DATA.en.problems.map(x => 'en-' + x.slug), 'en-blog', 'es', ...DATA.es.problems.map(x => 'es-' + x.slug), 'es-blog'];
+  document.getElementById('pnav').innerHTML = pages.map(tk => {
+    const r = parse(tk); const lab = r.blog ? `${r.lang.toUpperCase()} blog` : r.slug ? `${r.lang.toUpperCase()} ${DATA[r.lang].problems.findIndex(x => x.slug === r.slug) + 1}` : `${r.lang.toUpperCase()} ${r.lang === 'es' ? 'inicio' : 'home'}`;
+    return `<button type="button" data-go="${tk}" aria-current="${tk === tokenOf(route) || (r.blog && route.blog && r.lang === route.lang)}">${lab}</button>`;
+  }).join('');
+  document.getElementById('urlpath').textContent = 'thorusconsulting.com' + (route.lang === 'es' ? '/es' : '') + (route.blog ? '/blog' + (route.post ? '/' + route.post : '') : route.slug ? '/' + route.slug : '/');
+  document.querySelectorAll('.video canvas').forEach(drawVideo);
+  try { history.replaceState(null, '', '#' + tokenOf(route)); } catch (e) {}
+}
+
+function go(token) { route = parse(token); render(); window.scrollTo({ top: 0 }); }
+
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]');
+  if (g) { e.preventDefault(); go(g.dataset.go); if (g.hasAttribute('data-talk')) { const t = document.getElementById('talk'); if (t) t.scrollIntoView(); } return; }
+  if (e.target.closest('#blogBtn')) { go(route.lang + '-blog'); return; }
+  if (e.target.closest('#brand')) { e.preventDefault(); go(route.lang); return; }
+  if (e.target.closest('#langBtn')) {
+    const other = route.lang === 'en' ? 'es' : 'en';
+    const i = route.slug ? DATA[route.lang].problems.findIndex(x => x.slug === route.slug) : -1;
+    go(route.blog ? `${other}-blog` : i >= 0 ? `${other}-${DATA[other].problems[i].slug}` : other); return;
+  }
+  if (e.target.closest('#hTalk')) {
+    e.preventDefault();
+    const t = document.getElementById('talk');
+    if (t) t.scrollIntoView({ behavior: 'smooth' }); else go(`${route.lang}-${DATA[route.lang].problems[0].slug}`);
+    return;
+  }
+  if (e.target.closest('[data-noop]')) e.preventDefault();
+});
+document.addEventListener('submit', e => {
+  if (!e.target.matches('[data-mag]')) return;
+  e.preventDefault();
+  e.target.parentElement.querySelector('.ok').hidden = false;
+});
+
+// Placeholder "video still": soft contour lines suggesting a recorded frame.
+function drawVideo(c) {
+  const r = c.getBoundingClientRect(); const d = window.devicePixelRatio || 1;
+  c.width = Math.max(1, r.width * d); c.height = Math.max(1, r.height * d);
+  const x = c.getContext('2d'); x.scale(d, d);
+  const w = r.width, h = r.height;
+  const g = x.createRadialGradient(w * .72, h * .35, 10, w * .72, h * .35, w * .7);
+  g.addColorStop(0, 'rgba(79,189,185,0.28)'); g.addColorStop(1, 'rgba(79,189,185,0)');
+  x.fillStyle = g; x.fillRect(0, 0, w, h);
+  x.strokeStyle = 'rgba(234,242,244,0.07)'; x.lineWidth = 1;
+  for (let i = 0; i < 14; i++) {
+    x.beginPath();
+    for (let s = 0; s <= w; s += 8) {
+      const y = h * (0.15 + i * 0.06) + Math.sin(s / 90 + i * .7) * 10 + Math.cos(s / 37 + i) * 4;
+      s ? x.lineTo(s, y) : x.moveTo(s, y);
+    }
+    x.stroke();
+  }
+}
+window.addEventListener('resize', () => document.querySelectorAll('.video canvas').forEach(drawVideo));
+
+route = parse(location.hash.slice(1));
+render();
+</script>
